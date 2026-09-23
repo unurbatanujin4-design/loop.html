@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      .card {
+        width: 200px;
+        height: 200px;
+        border: 1px solid #f0bfbf;
+        display: flex;
+        border-radius: 20px;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: black;
+        cursor: pointer;
+        color: transparent;
+        background-color: bisque;
+        transition: all 1s;
+      }
+      .card-open {
+        background-color: azure;
+        color: black;
+      }
+
+      .container {
+        width: 860px;
+        margin: 0 auto;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="container"></div>
+
+    <script>
+      const shapes = ["🐱", "🐶", "🦊", "🐻", "🐼", "🦁"];
+      const cards = [];
+
+      let openIndex1 = -1;
+      let openIndex2 = -1;
+
+      for (let i = 0; i < shapes.length; i++) {
+        cards.push(shapes[i]);
+        cards.push(shapes[i]);
+      }
+
+      function shuffle(array) {
+        let currentIndex = array.length;
+
+        while (currentIndex != 0) {
+          let randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex],
+            array[currentIndex],
+          ];
+        }
+      }
+
+      shuffle(cards);
+
+      function startGame() {
+        let result = "";
+        for (let i = 0; i < cards.length; i++) {
+          result += ` <div class="card" id="card${i}" onclick="reveal(${i})">${cards[i]}</div>`;
+        }
+        document.getElementById("container").innerHTML = result;
+      }
+
+      startGame();
+
+      function reveal(index) {
+        const card = document.getElementById(`card${index}`);
+        card.classList.add("card-open");
+
+        if (openIndex1 == -1) {
+          openIndex1 = index;
+        } else {
+          openIndex2 = index;
+
+          if (cards[openIndex1] == cards[openIndex2]) {
+            console.log("match");
+          } else {
+            console.log("no match");
+
+            setTimeout(function () {
+              document
+                .getElementById(`card${openIndex1}`)
+                .classList.remove("card-open");
+              document
+                .getElementById(`card${openIndex2}`)
+                .classList.remove("card-open");
+              openIndex1 = -1;
+              openIndex2 = -1;
+            }, 1000);
+          }
+
+          console.log(openIndex1, openIndex2);
+        }
+
+        //if (card.classList.contains("card-open")) {
+        //card.classList.remove("card-open");
+        // } else {
+        //   card.classList.add("card-open");
+        // }
+      }
+    </script>
+  </body>
+</html>
