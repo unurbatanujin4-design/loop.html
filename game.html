@@ -9,7 +9,7 @@
       .card {
         width: 200px;
         height: 200px;
-        border: 1px solid #f0bfbf;
+        border: 1px solid #010101;
         display: flex;
         border-radius: 20px;
         align-items: center;
@@ -18,12 +18,17 @@
         color: black;
         cursor: pointer;
         color: transparent;
-        background-color: bisque;
+        background-color: rgb(173, 247, 199);
         transition: all 1s;
       }
       .card-open {
-        background-color: azure;
+        background-color: rgb(206, 245, 245);
         color: black;
+      }
+
+      .card-matched {
+        opacity: 0.5;
+        visibility: hidden;
       }
 
       .container {
@@ -41,6 +46,10 @@
     <script>
       const shapes = ["🐱", "🐶", "🦊", "🐻", "🐼", "🦁"];
       const cards = [];
+
+      let matchCount = 0;
+
+      let animating = false;
 
       let openIndex1 = -1;
       let openIndex2 = -1;
@@ -77,18 +86,42 @@
       startGame();
 
       function reveal(index) {
+        if (animating) {
+          return;
+        }
+
         const card = document.getElementById(`card${index}`);
         card.classList.add("card-open");
 
         if (openIndex1 == -1) {
           openIndex1 = index;
         } else {
+          if (openIndex1 == index) {
+            return;
+          }
           openIndex2 = index;
 
           if (cards[openIndex1] == cards[openIndex2]) {
             console.log("match");
+
+            matchCount++;
+
+            document
+              .getElementById(`card${openIndex1}`)
+              .classList.add("card-matched");
+            document
+              .getElementById(`card${openIndex2}`)
+              .classList.add("card-matched");
+
+            openIndex1 = -1;
+            openIndex2 = -1;
+
+            if (matchCount === shapes.length) {
+              alert("You Win!");
+            }
           } else {
             console.log("no match");
+            animating = true;
 
             setTimeout(function () {
               document
@@ -97,8 +130,11 @@
               document
                 .getElementById(`card${openIndex2}`)
                 .classList.remove("card-open");
+
               openIndex1 = -1;
               openIndex2 = -1;
+
+              animating = false;
             }, 1000);
           }
 
